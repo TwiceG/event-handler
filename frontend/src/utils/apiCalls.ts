@@ -1,9 +1,24 @@
-export async function apiGet (URL:string) {
-    const response :Response = await fetch(URL);
-    return response.json();
+
+
+export async function apiGet(URL: string) {
+    try {
+        const response: Response = await fetch(URL, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            return response.json()
+        }
+    } catch (error) {
+        console.error('error')
+    }
 }
 
-export async function apiPost (payload:any, URL:string, message:string)  {
+
+export async function apiPost(payload: any, URL: string, message: string) {
     try {
         const response: Response = await fetch(URL, {
             method: 'POST',

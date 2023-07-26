@@ -1,16 +1,15 @@
 import React, {useEffect, useState} from "react";
-import { Event } from '../../interfaces/Event';
+import {Event} from "../../utils/interfaces.ts";
 import OngoingEventCard from "../../components/card/OngoingEventCard.tsx";
 
 
 
 const OngoingEvents: React.FC = () => {
     const [uEvents, setEvents] = useState<Event[]>([]);
-    const [refresh, setRefresh] = useState<boolean>(false);
 
 
     async function getData()  {
-        const response :Response = await fetch('/event');
+        const response :Response = await fetch('/event/ongoing');
         return response.json();
     }
 
@@ -34,7 +33,7 @@ const OngoingEvents: React.FC = () => {
             })
             if (response.ok) {
                 console.log("Event deleted successfully.");
-                setRefresh(true);
+                refreshData()
             } else {
                 console.error("Cannot delete this event.");
             }
@@ -46,8 +45,7 @@ const OngoingEvents: React.FC = () => {
 
     useEffect (()=> {
         refreshData();
-        setRefresh(false);
-    },[refresh])
+    },[])
 
     if(uEvents.length == 0) {
         return (

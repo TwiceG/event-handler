@@ -1,11 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import EventCard from "../../components/card/EventCard.tsx";
+import {Event} from "../../utils/interfaces.ts";
 
-interface Event {
-    id: number
-    name: string
-    date: string
-}
 
 const UpcomingEvents: React.FC = () => {
 

@@ -1,10 +1,10 @@
 import  { useState } from 'react';
 
-const AddEvent: React.FC = () => {
+const AddEvent = () => {
   const [name, setName] = useState<string>("");
   const [date, setDate] = useState<string>("");
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const response: Response = await fetch('/event/add', {
@@ -12,7 +12,7 @@ const AddEvent: React.FC = () => {
         headers: {
           'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ name: name, date: date })
+        body: JSON.stringify({ name: name, date: date, ongoing: false})
       });
 
       console.log(name, date);

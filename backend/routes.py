@@ -14,16 +14,32 @@ def get_events():
         event_data = {
             'id': event.id,
             'name': event.name,
-            'date': event.date.strftime("%Y-%m-%dT%H:%M")
+            'date': event.date.strftime("%Y-%m-%dT%H:%M"),
+            'ongoing': event.ongoing
         }
         event_list.append(event_data)
     return jsonify(event_list)
 
 
+@routes_bp.route("/event/ongoing", methods=['GET'])
+def get_ongoing_events():
+    events = models.db.session.query(models.Event).filter(models.Event.ongoing == True).all()
+    ongoing_event_list = []
+    for event in events:
+        event_data = {
+            'id': event.id,
+            'name': event.name,
+            'date': event.date.strftime("%Y-%m-%dT%H:%M"),
+            'ongoing': event.ongoing
+        }
+        ongoing_event_list.append(event_data)
+    return jsonify(ongoing_event_list)
+
+
 @routes_bp.route("/event/add", methods=['POST'])
 def add_event():
     added_event = request.get_json()
-    event = models.Event(name=added_event["name"], date=added_event['date'])
+    event = models.Event(name=added_event["name"], date=added_event['date'], ongoing=added_event['ongoing'])
     models.db.session.add(event)
     models.db.session.commit()
     return jsonify({"message": "Event successfully created."})
@@ -38,6 +54,13 @@ def delete_event(event_id):
     models.db.session.commit()
     return jsonify({"message": "Event deleted successfully."})
 
+@routes_bp.route("/event/start", methods=['POST'])
+def start_event():
+    event_id = request.get_json()
+    event_to_update = models.db.session.query(models.Event).filter(models.Event.id == event_id).first()
+    event_to_update.ongoing = True
+    models.db.session.commit()
+    return jsonify({"massage": "Event started"})
 
 @routes_bp.route("/event/<int:event_id>", methods=['GET'])
 def get_event(event_id):
@@ -137,7 +160,7 @@ def add_match():
     added_match = request.get_json()
     match = models.Match(
         player_1_id=added_match["player_1_id"],
-        player_2_id=added_match["player_1_id"],
+        player_2_id=added_match["player_2_id"],
         event_id=added_match["event_id"],
         winner=None)
     models.db.session.add(match)
@@ -158,7 +181,7 @@ def delete_matches(event_id):
 
 @routes_bp.route("/event/<int:event_id>/players", methods=['GET'])
 def get_players_by_event(event_id):
-    participants = models.db.session.query(models.PlayerEvent).get(event_id)
+    participants = models.db.session.query(models.Player).join(models.PlayerEvent).filter(models.PlayerEvent.event_id == event_id).all()
     players = []
     if not participants:
         return jsonify({"message": "Players not found."}), 404

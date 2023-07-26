@@ -1,7 +1,20 @@
-import React from "react";
-import {EventCardProps} from "../../interfaces/EvenetCardProps.ts";
+import {apiPost} from "../../utils/apiCalls.ts";
+import {Event} from "../../interfaces/Event.ts";
 
-const EventCard: React.FC<EventCardProps> = ({ event, deleteEvent }) => {
+
+export interface EventCardProps {
+    event: Event;
+    deleteEvent: (id: number) => void;
+}
+
+const EventCard = ({ event, deleteEvent }: EventCardProps) => {
+
+    const startEvent = async (eventId: number) => {
+        const url = "/event/start"
+        const message = "Event Started"
+        apiPost(eventId, url, message)
+    }
+
     return (
         <div className="card" key={event.id}>
             <div className="card-details">
@@ -12,8 +25,10 @@ const EventCard: React.FC<EventCardProps> = ({ event, deleteEvent }) => {
                 <button
                     className="card-button"
                     onClick={() => deleteEvent(event.id)}
-                    value="Delete"
                 >Delete</button>
+                <button className="card-button"
+                        onClick={() => startEvent(event.id)}
+                >Start Event</button>
             </div>
         </div>
     );

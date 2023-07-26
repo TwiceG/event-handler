@@ -1,6 +1,12 @@
 import React from "react";
-import {EventCardProps} from "../../interfaces/EvenetCardProps.ts";
 import {Link} from "react-router-dom";
+import {Event} from "../../interfaces/Event.ts";
+
+
+export interface EventCardProps {
+    event: Event;
+    deleteEvent: (id: number) => void;
+}
 
 const OngoingEventCard: React.FC<EventCardProps> = ({ event, deleteEvent }) => {
     return (

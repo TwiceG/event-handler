@@ -1,5 +1,5 @@
 import {useEffect, useState} from "react";
-import {Event} from "../interfaces/Event.ts";
+import {Event} from "../utils/interfaces.ts";
 import {apiGet, apiPost} from "../utils/apiCalls.ts";
 
 
@@ -8,7 +8,7 @@ const AddPlayer = () => {
     const [playerName , setPlayerName] = useState('');
     const [selectedEvents, setSelectedEvents] = useState<number[]>([]);
 
-    const getEvents = async () :void => {
+    const getEvents = async ()  => {
         const response :Promise<Event[]> = await apiGet('/event');
         setEvents(response);
     }
@@ -22,7 +22,7 @@ const AddPlayer = () => {
 
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
-        const itemValue: number = Number(event.target.value);
+        const itemValue = Number(event.target.value);
 
         if (event.target.checked) {
             if (!selectedEvents.includes(itemValue)) {

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Sequence
+from sqlalchemy import Column, Integer, String, ForeignKey, DateTime, Sequence, Boolean
 from sqlalchemy.orm import declarative_base, relationship
 from flask_sqlalchemy import SQLAlchemy
 
@@ -26,6 +26,7 @@ class Event(Base):
     id = Column(Integer, primary_key=True)
     name = Column(String(255))
     date = Column(DateTime)
+    ongoing = Column(Boolean)
     players = relationship("Player", secondary="player_event", back_populates="events")
 
 
