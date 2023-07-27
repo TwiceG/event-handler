@@ -1,6 +1,6 @@
 import React from "react";
 import {Link} from "react-router-dom";
-import {Event} from "../../interfaces/Event.ts";
+import {Event} from "../../utils/interfaces.ts";
 
 
 export interface EventCardProps {

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import  {useEffect, useState} from 'react';
 import {Event} from "../utils/interfaces.ts";
 import {useParams} from 'react-router-dom';
 import {apiGet} from "../utils/apiCalls.ts";
@@ -17,7 +17,7 @@ const EventDetails = () => {
     const fetchPlayers = async () => {
         const response = await apiGet(`/event/${id}/players`)
         const players = response as Player[]
-        console.log(response)
+        console.log(players)
         setPlayers(players)
 
     }
@@ -33,7 +33,7 @@ const EventDetails = () => {
 
             if (response.ok) {
                 const data = await response.json();
-                const event: Event = data as Event; // Assuming the response data matches the Event interface
+                const event: Event = data as Event;
                 setDetails(event);
             } else {
                 console.error('Event not found!!');

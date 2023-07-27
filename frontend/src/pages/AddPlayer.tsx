@@ -5,12 +5,13 @@ import {apiGet, apiPost} from "../utils/apiCalls.ts";
 
 const AddPlayer = () => {
     const [events, setEvents] = useState<Event[]>([]);
-    const [playerName , setPlayerName] = useState('');
+    const [playerName, setPlayerName] = useState('');
     const [selectedEvents, setSelectedEvents] = useState<number[]>([]);
 
-    const getEvents = async ()  => {
-        const response :Promise<Event[]> = await apiGet('/event');
-        setEvents(response);
+    const getEvents = async () => {
+        const response = await apiGet('/event');
+        const events = response as Event[]
+        setEvents(events);
     }
 
     const handleSubmit = (e: React.FormEvent) => {
@@ -18,7 +19,6 @@ const AddPlayer = () => {
         apiPost({name: playerName, eventIds: selectedEvents}, '/player/add', 'Player created successfully');
         window.location.reload()
     }
-
 
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -34,9 +34,9 @@ const AddPlayer = () => {
         }
     };
 
-    useEffect(()=> {
+    useEffect(() => {
         getEvents();
-    },[])
+    }, [])
 
     return (
         <div>
@@ -49,12 +49,12 @@ const AddPlayer = () => {
                         placeholder="Player name"
                     />
 
-                        {events.map((event:Event)=> (
-                            <div>
+                    {events.map((event: Event) => (
+                        <div>
                             <input type="checkbox" onChange={handleChange} value={event.id} id={event.name}/>
                             <label htmlFor={event.name}>{event.name}</label>
-                            </div>
-                        ))}
+                        </div>
+                    ))}
 
                     <button type="submit">Add</button>
                 </form>

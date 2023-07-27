@@ -4,7 +4,7 @@ const AddEvent = () => {
   const [name, setName] = useState<string>("");
   const [date, setDate] = useState<string>("");
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       const response: Response = await fetch('/event/add', {
