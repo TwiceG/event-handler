@@ -32,7 +32,7 @@ def create_advanced_round_matches_for_single_elimination(matches, event_id):
             match = Match(event_id=event_id)
             matches.append(match)
         number_of_needed_matches = number_of_needed_matches/2
-
+    return matches
 
 def add_matches_to_database(matches):
     for match in matches:
