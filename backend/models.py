@@ -33,6 +33,7 @@ class Event(Base):
 class Match(Base):
     __tablename__ = "matches"
     id = Column(Integer, primary_key=True)
+    next_match_id = Column(Integer, ForeignKey("matches.id"), nullable=True)
     player_1_id = Column(Integer, ForeignKey("players.id"), primary_key=True, nullable=True)
     player_2_id = Column(Integer, ForeignKey("players.id"), primary_key=True, nullable=True)
     event_id = Column(Integer, ForeignKey("events.id"), primary_key=True)
