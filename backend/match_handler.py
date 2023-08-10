@@ -39,7 +39,8 @@ def organize_preround_matches(preround_players, event_id, first_round_bracket_co
                     id=int(f"{event_id}{round_id:02d}{match_id:02d}"),
                     next_match_id=int(f"{event_id}{round_id + 1:02d}{r1_match_id}"),
                     player_1_id=remaining_players[player_index].get("id"),
-                    player_2_id=remaining_players[player_index + 1].get("id")
+                    player_2_id=remaining_players[player_index + 1].get("id"),
+                    event_id=event_id
                 )
 
                 r1_match_id += 1
