@@ -1,4 +1,5 @@
 from flask import jsonify, request, Blueprint
+from sqlalchemy.orm import joinedload
 import models
 from datetime import datetime
 
@@ -14,7 +15,27 @@ def get_events():
         event_data = {
             'id': event.id,
             'name': event.name,
-            'date': event.date.strftime("%Y-%m-%dT%H:%M")
+            'date': event.date.strftime("%Y-%m-%dT%H:%M"),
+            'players': [player.name for player in event.players]
+        }
+        event_list.append(event_data)
+    return jsonify(event_list)
+
+
+@routes_bp.route("/events-with-players", methods=['GET'])
+def get_events_with_players():
+    events = (
+        models.db.session.query(models.Event)
+        .options(joinedload(models.Event.players))  # Load the associated players
+        .all()
+    )
+    event_list = []
+    for event in events:
+        event_data = {
+            'id': event.id,
+            'name': event.name,
+            'date': event.date.strftime("%Y-%m-%dT%H:%M"),
+            'players': [{'id': player.id, 'name': player.name} for player in event.players]
         }
         event_list.append(event_data)
     return jsonify(event_list)
@@ -26,6 +47,21 @@ def add_event():
     event = models.Event(name=added_event["name"], date=added_event['date'])
     models.db.session.add(event)
     models.db.session.commit()
+    if 'players' in added_event:
+        for player_id in added_event['players']:
+            player = models.db.session.query(models.Player).get(player_id)
+            if player:
+                event.players.append(player)
+    if 'matches' in added_event:
+        for match_data in added_event['matches']:
+            match = models.Match(
+                player_1_id=match_data['player_1_id'],
+                player_2_id=match_data['player_2_id'],
+                event_id=event.id,
+                winner=match_data.get('winner')
+            )
+            models.db.session.add(match)
+    models.db.session.commit()
     return jsonify({"message": "Event successfully created."})
 
 
@@ -34,6 +70,11 @@ def delete_event(event_id):
     event = models.db.session.query(models.Event).get(event_id)
     if not event:
         return jsonify({"message": "Event not found."}), 404
+    for player in event.players:
+        player.events.remove(event)
+    matches = models.db.session.query(models.Match).filter_by(event_id=event.id).all()
+    for match in matches:
+        models.db.session.delete(match)
     models.db.session.delete(event)
     models.db.session.commit()
     return jsonify({"message": "Event deleted successfully."})
@@ -68,7 +109,11 @@ def get_players():
 @routes_bp.route("/player/add", methods=['POST'])
 def add_player():
     added_player = request.get_json()
-    player = models.Player(name=added_player["name"])
+    event_list = []
+    for id in added_player["events"]:
+        event = models.db.session.query(models.Event).get(id)
+        event_list.append(event)
+    player = models.Player(name=added_player["name"], events=event_list)
     models.db.session.add(player)
     models.db.session.commit()
     return jsonify({"message": "Player successfully added."})
@@ -153,14 +198,15 @@ def delete_matches(event_id):
 
 @routes_bp.route("/event/<int:event_id>/players", methods=['GET'])
 def get_players_by_event(event_id):
-    participants = models.db.session.query(models.Player).join(models.PlayerEvent).filter_by(models.PlayerEvent.event_id == event_id).all()
-    players = []
-    if not participants:
+    event = models.db.session.query(models.Event).get(event_id)
+    players = event.players
+    data = []
+    if not players:
         return jsonify({"message": "Players not found."}), 404
-    for player in participants:
+    for player in players:
         player_data = {
             "id": player.id,
             "name": player.name
         }
-        players.append(player_data)
-    return jsonify(players)
+        data.append(player_data)
+    return jsonify(data)

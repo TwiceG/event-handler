@@ -27,12 +27,24 @@ class Event(Base):
     name = Column(String(255))
     date = Column(DateTime)
     players = relationship("Player", secondary="player_event", back_populates="events")
+    matches = relationship("Match", back_populates="event")
 
 
 class Match(Base):
     __tablename__ = "matches"
     id = Column(Integer, primary_key=True)
-    player_1_id = Column(Integer, ForeignKey("players.id"), primary_key=True)
-    player_2_id = Column(Integer, ForeignKey("players.id"), primary_key=True)
-    event_id = Column(Integer, ForeignKey("events.id"), primary_key=True)
-    winner = Column(Integer, ForeignKey("players.id"), primary_key=True, nullable=True)
+    event_id = Column(Integer, ForeignKey("events.id"))
+    player_1_id = Column(Integer, ForeignKey("players.id"))
+    player_2_id = Column(Integer, ForeignKey("players.id"))
+    winner_id = Column(Integer, ForeignKey("players.id"), nullable=True)
+    state = Column(String(20))
+    start_time = Column(DateTime)
+    tournament_round_text = Column(String(10))
+    next_match_id = Column(Integer, ForeignKey("matches.id"), nullable=True)
+
+    event = relationship("Event", back_populates="matches")
+    player_1 = relationship("Player", foreign_keys=[player_1_id])
+    player_2 = relationship("Player", foreign_keys=[player_2_id])
+    winner = relationship("Player", foreign_keys=[winner_id])
+    next_match = relationship("Match", foreign_keys=[next_match_id], remote_side=[id])
+

@@ -1,20 +1,16 @@
-import React, {useState, useEffect} from 'react';
-import EventCard from "../../components/card/EventCard.tsx";
+import React, {useEffect, useState} from "react";
+import { Event } from '../interfaces/Event.ts';
+import OngoingEventCard from "../components/cards/OngoingEventCard.tsx";
 
-interface Event {
-    id: number
-    name: string
-    date: string
-}
 
-const UpcomingEvents: React.FC = () => {
 
-    const [events, setEvents] = useState<Event[]>([]);
+const OngoingEvents: React.FC = () => {
+    const [uEvents, setEvents] = useState<Event[]>([]);
     const [refresh, setRefresh] = useState<boolean>(false);
 
 
-    async function getData() {
-        const response: Response = await fetch('/event');
+    async function getData()  {
+        const response :Response = await fetch('/event');
         return response.json();
     }
 
@@ -22,13 +18,13 @@ const UpcomingEvents: React.FC = () => {
         getData().then(
             (data) => {
                 setEvents(data);
-                console.log(events);
+                console.log(uEvents);
             }
         )
     }
 
 
-    async function deleteEvent(eventId: number) {
+    async function deleteEvent(eventId:number) {
         try {
             const response = await fetch(`/event/delete/${eventId}`, {
                 method: "DELETE",
@@ -48,12 +44,12 @@ const UpcomingEvents: React.FC = () => {
     }
 
 
-    useEffect(() => {
+    useEffect (()=> {
         refreshData();
         setRefresh(false);
-    }, [refresh])
+    },[refresh])
 
-    if (events.length == 0) {
+    if(uEvents.length == 0) {
         return (
             <div className="content">
                 <h1 className="page-title">Upcoming Events</h1>
@@ -64,10 +60,10 @@ const UpcomingEvents: React.FC = () => {
 
     return (
         <div className="content">
-            <h1 className="page-title">Upcoming Events</h1>
+            <h1 className="page-title">Ongoing Events</h1>
             <div className="event-list">
-                {events.map((event) => (
-                    <EventCard event={event} deleteEvent={deleteEvent}/>
+                {uEvents.map((event) => (
+                    <OngoingEventCard event={event} deleteEvent={deleteEvent}/>
                 ))}
             </div>
 
@@ -75,4 +71,4 @@ const UpcomingEvents: React.FC = () => {
     )
 }
 
-export default UpcomingEvents;
+export default OngoingEvents;

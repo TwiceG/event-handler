@@ -1,12 +1,12 @@
 import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import Header from "./components/Header.tsx";
 import HomePage from "./pages/HomePage.tsx";
-import SideBar from "./components/SideBar.tsx";
 import AddEvent from "./pages/AddEvent.tsx";
-import UpcomingEvents from "./pages/events_lists/UpcomingEvents.tsx";
-import OngoingEvents from "./pages/events_lists/OngoingEvents.tsx";
-
+import UpcomingEvents from "./pages/UpcomingEvents.tsx";
+import OngoingEvents from "./pages/OngoingEvents.tsx";
 import EventDetails from "./pages/EventDetails.tsx";
 import AddPlayer from "./pages/AddPlayer.tsx";
+import Footer from "./components/Footer.tsx";
 
 
 function App() {
@@ -15,7 +15,7 @@ function App() {
     return (
         <div>
             <Router>
-                <SideBar />
+                <Header />
                 <Routes>
                     <Route path="/" element={<HomePage />}/>
                     <Route path="/event-details/:id" element={ <EventDetails />}/>
@@ -24,6 +24,7 @@ function App() {
                     <Route path="/upcoming-events" element={ <UpcomingEvents /> }/>
                     <Route path="/add-player" element={ <AddPlayer /> }/>
                 </Routes>
+                <Footer/>
             </Router>
         </div>
     )

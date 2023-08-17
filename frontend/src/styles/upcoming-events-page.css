@@ -1,0 +1,12 @@
+.upcoming-events-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 10vh;
+}
+
+.upcoming-events-container h2 {
+    margin-bottom: 20px;
+    font-size: 24px;
+}
